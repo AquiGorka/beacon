@@ -5,6 +5,13 @@ import Dashboard from './Dashboard'
 import Pages from './Pages'
 import Footer from './Footer'
 
+type MockData = {
+  id: string
+  labels: string[]
+  status: string
+  confirm: string[]
+}
+
 const hardcodedData = {
   id: '27658930',
   labels: ['Carrier', 'Carrier Info'],
@@ -13,12 +20,7 @@ const hardcodedData = {
 }
 
 function useSidePanel() {
-  const [data, setData] = useState<{
-    id: string
-    labels: string[]
-    status: string
-    confirm: string[]
-  } | null>(null)
+  const [data, setData] = useState<MockData | null>(null)
 
   useEffect(() => {
     setData(hardcodedData)

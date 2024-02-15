@@ -18,8 +18,8 @@ const styles = stylex.create({
     border: `1px solid ${borderColor}`,
     borderRadius,
     padding: '2px 8px',
-    fontSize: 14,
-    fontWeight: '200',
+    fontSize: 18,
+    fontWeight: '400',
     color,
     background,
   }),
@@ -27,8 +27,8 @@ const styles = stylex.create({
 
 function Chip({
   children,
-  color = 'gray',
-  borderColor = 'lightgray',
+  color = '#5A5A5A',
+  borderColor = '#E8E9E9',
   background = 'transparent',
   borderRadius = 16,
   icon,

@@ -12,88 +12,57 @@ import ConsigneeIcon from '../icons/Consignee'
 import CarrierIcon from '../icons/Carrier'
 import Input from '../components/Input'
 
-const styles = stylex.create({
-  tabs: {
-    display: 'flex',
-    flexDirection: 'row',
-    gridGap: 40,
-    overflow: 'scroll',
-    width: '100vw',
-    borderBottom: '1px solid lightgray',
-    padding: '4px 16px',
-    paddingBottom: 0,
-    background: '#FFFDF9',
-  },
-  tab: {
-    display: 'flex',
-    flexDirection: 'row',
-    gridGap: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 24,
-    minWidth: 'fit-content',
-    padding: '4px 0',
-  },
-  selected: {
-    color: 'orange',
-    borderBottom: '2px solid orange',
-  },
-  page: {
-    padding: '24px 16px',
-    background: 'white',
-  },
-  details: {
-    borderBottom: '1px solid lightgray',
-    padding: '8px 0',
-    cursor: 'pointer',
-  },
-  summary: {
-    display: 'grid',
-    gridTemplateColumns: 'auto auto 1fr auto',
-    gridGap: 12,
-    alignItems: 'center',
-  },
-  opened: {
-    transform: 'rotate(180deg)',
-  },
-  edit: {
-    color: 'orange',
-    ':hover': { textDecoration: 'underline' },
-  },
-  form: {
-    display: 'grid',
-    gridGap: 24,
-  },
-  twoColumns: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gridGap: 24,
-  },
-})
+import { styles } from './Pages.styles'
+
+enum Page {
+  TMSInfo = 'TMSInfo',
+  SchedulingInfo = 'SchedulingInfo',
+  Labels = 'Labels',
+}
+
+enum Open {
+  None = 'None',
+  Customer = 'Customer',
+  BillTo = 'BillTo',
+  PickUp = 'PickUp',
+  Consignee = 'Consignee',
+  Carrier = 'Carrier',
+}
 
 function usePages() {
-  const [current, setCurrent] = useState('TMSInfo')
-  const [open, setOpen] = useState('Customer')
+  const [current, setCurrent] = useState(Page.TMSInfo)
+  const [open, setOpen] = useState(Open.Customer)
 
-  const handleChangeOpen = (which: string) => setOpen(which)
+  const handleChangeCurrent = (which: Page) => setCurrent(which)
+  const handleChangeOpen = (which: Open) => setOpen((cur) => (which !== cur ? which : Open.None))
 
-  return { current, open, handleChangeOpen }
+  return { current, handleChangeCurrent, open, handleChangeOpen }
 }
 
 function Pages() {
-  const { current, open, handleChangeOpen } = usePages()
+  const { current, handleChangeCurrent, open, handleChangeOpen } = usePages()
+  console.log({ open })
 
   return (
     <section>
       <div {...stylex.props(styles.tabs)}>
-        <div {...stylex.props(styles.tab, current === 'TMSInfo' && styles.selected)}>
+        <div
+          {...stylex.props(styles.tab, current === Page.TMSInfo && styles.selected)}
+          onClick={() => handleChangeCurrent(Page.TMSInfo)}
+        >
           <TruckIcon /> <span>TMS Info</span>
         </div>
-        <div {...stylex.props(styles.tab, current === 'SchedulingInfo' && styles.selected)}>
+        <div
+          {...stylex.props(styles.tab, current === Page.SchedulingInfo && styles.selected)}
+          onClick={() => handleChangeCurrent(Page.SchedulingInfo)}
+        >
           <CalendarIcon />
           <span>Scheduling Info</span>
         </div>
-        <div {...stylex.props(styles.tab, current === 'Labels' && styles.selected)}>
+        <div
+          {...stylex.props(styles.tab, current === Page.Labels && styles.selected)}
+          onClick={() => handleChangeCurrent(Page.Labels)}
+        >
           <LabelsIcon />
           <span>Labels Info</span>
         </div>
@@ -105,17 +74,27 @@ function Pages() {
   )
 }
 
-type TMSInfoProps = { open: string; onOpen: (wchich: string) => void }
+type TMSInfoProps = { open: Open; onOpen: (wchich: Open) => void }
 
 function TMSInfo({ open, onOpen }: TMSInfoProps) {
+  console.log('-->TMSInfo:', { open })
   return (
     <div {...stylex.props(styles.page)}>
-      <details {...stylex.props(styles.details)} open={open === 'Customer'} onClick={()=>onOpen('Customer')}>
-        <summary {...stylex.props(styles.summary)}>
-          <CustomerIcon />
+      <details {...stylex.props(styles.details)} open={open === Open.Customer}>
+        <summary
+          onClick={(ev) => {
+            ev.preventDefault()
+            onOpen(Open.Customer)
+          }}
+          {...stylex.props(styles.summary)}
+        >
+          <CustomerIcon color="#535353" />
           <h3>Customer</h3>
           <span {...stylex.props(styles.edit)}>Edit</span>
-          <CaretDownIcon color="red" {...stylex.props(open === 'Customer' && styles.opened)} />
+          <CaretDownIcon
+            color="#F16D6C"
+            {...stylex.props(open === Open.Customer && styles.opened)}
+          />
         </summary>
         <form {...stylex.props(styles.form)}>
           <Input placeholder="e.g. Harvey Rodriguez & Co." label="Name" />
@@ -134,35 +113,69 @@ function TMSInfo({ open, onOpen }: TMSInfoProps) {
           <Input placeholder="Ref number" label="Ref number" />
         </form>
       </details>
-      <details {...stylex.props(styles.details)}onClick={()=>onOpen('Bill To')}>
-        <summary {...stylex.props(styles.summary)}>
-          <BillToIcon />
+      <details open={open === Open.BillTo} {...stylex.props(styles.details)}>
+        <summary
+          onClick={(ev) => {
+            ev.preventDefault()
+            onOpen(Open.BillTo)
+          }}
+          {...stylex.props(styles.summary)}
+        >
+          <BillToIcon color="#535353" />
           <h3>Bill to</h3>
-          <span {...stylex.props(styles.edit)}>Edit</span> <CaretDownIcon color="red" />
+          <span {...stylex.props(styles.edit)}>Edit</span>
+          <CaretDownIcon color="#F16D6C" {...stylex.props(open === Open.BillTo && styles.opened)} />
         </summary>
         <div>Coming soon...</div>
       </details>
-      <details {...stylex.props(styles.details)}onClick={()=>onOpen('Pick Up')}>
-        <summary {...stylex.props(styles.summary)}>
-          <PickUpIcon />
+      <details open={open === Open.PickUp} {...stylex.props(styles.details)}>
+        <summary
+          onClick={(ev) => {
+            ev.preventDefault()
+            onOpen(Open.PickUp)
+          }}
+          {...stylex.props(styles.summary)}
+        >
+          <PickUpIcon color="#535353" />
           <h3>Pick up</h3>
-          <span {...stylex.props(styles.edit)}>Edit</span> <CaretDownIcon color="red" />
+          <span {...stylex.props(styles.edit)}>Edit</span>
+          <CaretDownIcon color="#F16D6C" {...stylex.props(open === Open.PickUp && styles.opened)} />
         </summary>
         <div>Coming soon...</div>
       </details>
-      <details {...stylex.props(styles.details)}onClick={()=>onOpen('Customer')}>
-        <summary {...stylex.props(styles.summary)}>
-          <ConsigneeIcon />
+      <details open={open === Open.Consignee} {...stylex.props(styles.details)}>
+        <summary
+          onClick={(ev) => {
+            ev.preventDefault()
+            onOpen(Open.Consignee)
+          }}
+          {...stylex.props(styles.summary)}
+        >
+          <ConsigneeIcon color="#535353" />
           <h3>Consignee</h3>
-          <span {...stylex.props(styles.edit)}>Edit</span> <CaretDownIcon color="red" />
+          <span {...stylex.props(styles.edit)}>Edit</span>
+          <CaretDownIcon
+            color="#F16D6C"
+            {...stylex.props(open === Open.Consignee && styles.opened)}
+          />
         </summary>
         <div>Coming soon...</div>
       </details>
-      <details {...stylex.props(styles.details)}onClick={()=>onOpen('Customer')}>
-        <summary {...stylex.props(styles.summary)}>
-          <CarrierIcon />
+      <details open={open === Open.Carrier} {...stylex.props(styles.details)}>
+        <summary
+          onClick={(ev) => {
+            ev.preventDefault()
+            onOpen(Open.Carrier)
+          }}
+          {...stylex.props(styles.summary)}
+        >
+          <CarrierIcon color="#535353" />
           <h3>Carrier</h3>
-          <span {...stylex.props(styles.edit)}>Edit</span> <CaretDownIcon color="red" />
+          <span {...stylex.props(styles.edit)}>Edit</span>
+          <CaretDownIcon
+            color="#F16D6C"
+            {...stylex.props(open === Open.Carrier && styles.opened)}
+          />
         </summary>
         <div>Coming soon...</div>
       </details>

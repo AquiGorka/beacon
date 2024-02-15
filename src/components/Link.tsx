@@ -8,6 +8,8 @@ type Props = {
 const styles = stylex.create({
   wrapper: {
     color: '#FE8052',
+    textDecoration: 'none',
+    borderBottom: '1px solid #FE8052',
   },
 })
 
