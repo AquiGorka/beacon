@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import { crx } from '@crxjs/vite-plugin'
 import react from '@vitejs/plugin-react'
+import styleX from "vite-plugin-stylex"
 
 import manifest from './src/manifest'
 
@@ -16,6 +17,6 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [crx({ manifest }), react()],
+    plugins: [crx({ manifest }), react(), styleX()],
   }
 })

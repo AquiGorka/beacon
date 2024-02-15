@@ -23,8 +23,10 @@
     "zip": "npm run build && node src/zip.js"
   },
   "dependencies": {
+    "@stylexjs/stylex": "^0.5.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "vite-plugin-stylex": "^0.5.0"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.19",
@@ -32,10 +34,15 @@
     "@types/react": "^18.2.28",
     "@types/react-dom": "^18.2.13",
     "@vitejs/plugin-react": "^4.1.0",
-    "gulp": "^4.0.2",
-    "gulp-zip": "^6.0.0",
+    "gulp": "^3.9.1",
+    "gulp-zip": "^4.2.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
-    "vite": "~4.2.2"
+    "vite": "^4.5.2"
+  },
+  "overrides": {
+    "vite-plugin-stylex": {
+      "@stylexjs/babel-plugin": "0.4.1"
+    }
   }
 }
